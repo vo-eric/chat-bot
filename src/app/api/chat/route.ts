@@ -8,7 +8,7 @@ import {
   streamText,
   type Message,
 } from "ai";
-import { loadChat, saveChat } from "tools/chat-store";
+import { loadMessages, saveMessages } from "tools/chat-store";
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -16,7 +16,7 @@ export const maxDuration = 30;
 export async function POST(req: Request) {
   const { message, id }: { message: Message; id: string } = await req.json();
 
-  const previousMessages = await loadChat(id);
+  const previousMessages = await loadMessages(id);
 
   const messages = appendClientMessage({
     messages: previousMessages,
@@ -28,7 +28,7 @@ export async function POST(req: Request) {
     system: "You are a helpful assistant.",
     messages,
     async onFinish({ response }) {
-      await saveChat({
+      await saveMessages({
         id,
         messages: appendResponseMessages({
           messages,

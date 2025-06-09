@@ -31,6 +31,8 @@ export default function Chat({
     },
   });
 
+  console.log(messages[0]);
+
   return (
     <div className="mx-auto flex w-full max-w-md flex-col">
       <div className="flex-1 overflow-y-auto">
