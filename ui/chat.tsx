@@ -1,7 +1,13 @@
 "use client";
-import { useChat } from "@ai-sdk/react";
+import { useChat, type Message } from "@ai-sdk/react";
+import { createIdGenerator } from "ai";
+import { redirect } from "next/navigation";
+import { createChat } from "tools/chat-store";
 
-export default function Chat() {
+export default function Chat({
+  id,
+  initialMessages,
+}: { id?: string | undefined; initialMessages?: Message[] } = {}) {
   const {
     messages,
     input,
@@ -12,6 +18,13 @@ export default function Chat() {
     error,
     reload,
   } = useChat({
+    id,
+    initialMessages,
+    sendExtraMessageFields: true,
+    generateId: createIdGenerator({
+      prefix: "msg-c",
+      size: 16,
+    }),
     onError: (error) => {
       console.error(error);
     },
