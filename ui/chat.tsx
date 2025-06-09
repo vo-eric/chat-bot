@@ -1,8 +1,6 @@
 "use client";
 import { useChat, type Message } from "@ai-sdk/react";
 import { createIdGenerator } from "ai";
-import { redirect } from "next/navigation";
-import { createChat } from "tools/chat-store";
 
 export default function Chat({
   id,
@@ -25,6 +23,9 @@ export default function Chat({
       prefix: "msg-c",
       size: 16,
     }),
+    experimental_prepareRequestBody({ messages, id }) {
+      return { message: messages[messages.length - 1], id };
+    },
     onError: (error) => {
       console.error(error);
     },
