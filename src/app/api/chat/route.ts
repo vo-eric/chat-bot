@@ -19,10 +19,11 @@ export async function POST(req: Request) {
 
   return result.toDataStreamResponse({
     getErrorMessage: errorHandler,
+    sendSources: true,
   });
 }
 
-export function errorHandler(error: unknown) {
+function errorHandler(error: unknown) {
   if (error == null) {
     return "unknown error";
   }

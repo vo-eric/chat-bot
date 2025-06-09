@@ -29,7 +29,7 @@ export default function Chat() {
       </div>
       {(status === "submitted" || status === "streaming") && (
         <div>
-          {status === "submitted" && <div>adsfadsf</div>}
+          {status === "submitted" && <div>Give me a sec</div>}
           <button type="button" onClick={() => stop()}>
             Stop
           </button>
