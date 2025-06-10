@@ -46,12 +46,30 @@ export async function POST(req: Request) {
         parameters: z.object({
           message: z.string().describe("The message to ask for confirmation."),
         }),
+        execute: async ({ message }: { message: string }) => {
+          return message;
+        },
       },
       // client-side tool that is automatically executed on the client:
       getLocation: {
-        description:
-          "Get the user location. Always ask for confirmation before using this tool.",
-        parameters: z.object({}),
+        description: "Get the city the user is in",
+        parameters: z.object({
+          lat: z.number(),
+          lng: z.number(),
+        }),
+        execute: async ({ lat, lng }) => {
+          const url = `https://geocode.maps.co/reverse?lat=${lat}&lon=${lng}&api_key=${process.env.GEOCODE_API_KEY}`;
+          const response = await fetch(url);
+
+          if (!response.ok) {
+            throw new Error(`Failed to fetch location: ${response.statusText}`);
+          }
+
+          const locationInfo = await response.json();
+          console.log("location info", locationInfo);
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
+          return locationInfo.address.quarter ?? locationInfo.address.city;
+        },
       },
     },
     async onFinish({ response }) {

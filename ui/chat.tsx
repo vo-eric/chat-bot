@@ -26,12 +26,7 @@ export default function Chat({
       prefix: "msg-c",
       size: 16,
     }),
-    async onToolCall({ toolCall }) {
-      if (toolCall.toolName === "getLocation") {
-        const cities = ["New York", "Los Angeles", "Chicago", "San Francisco"];
-        return cities[Math.floor(Math.random() * cities.length)];
-      }
-    },
+
     experimental_prepareRequestBody({ messages, id }) {
       return { message: messages[messages.length - 1], id };
     },
@@ -41,11 +36,11 @@ export default function Chat({
   });
 
   return (
-    <>
+    <div className="mx-auto w-[80%] py-8">
       {messages?.map((message) => (
         <div key={message.id}>
           <strong>{`${message.role}: `}</strong>
-          {message.parts.map((part) => {
+          {message.parts.map((part, index) => {
             switch (part.type) {
               // render text parts as simple text:
               case "text":
@@ -64,6 +59,7 @@ export default function Chat({
                             {part.toolInvocation.args.message}
                             <div>
                               <button
+                                className="bg-green-500 p-4"
                                 onClick={() =>
                                   addToolResult({
                                     toolCallId: callId,
@@ -74,6 +70,7 @@ export default function Chat({
                                 Yes
                               </button>
                               <button
+                                className="bg-red-500 p-4"
                                 onClick={() =>
                                   addToolResult({
                                     toolCallId: callId,
@@ -145,10 +142,16 @@ export default function Chat({
         </div>
       ))}
 
-      <form onSubmit={handleSubmit}>
-        <input value={input} onChange={handleInputChange} />
+      <form onSubmit={handleSubmit} className="flex gap-2">
+        <input
+          value={input}
+          onChange={handleInputChange}
+          placeholder="Say something..."
+          className="flex-1 rounded border p-2"
+        />
+        <button type="submit">Send</button>
       </form>
-    </>
+    </div>
   );
 }
 
