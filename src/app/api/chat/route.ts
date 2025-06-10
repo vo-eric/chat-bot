@@ -1,23 +1,34 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { openai } from "@ai-sdk/openai";
-import { appendResponseMessages, createIdGenerator, streamText } from "ai";
-import { saveChat } from "tools/chat-store";
+import {
+  appendClientMessage,
+  appendResponseMessages,
+  createIdGenerator,
+  streamText,
+  type Message,
+} from "ai";
+import { loadMessages, saveMessages } from "tools/chat-store";
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
-  const { messages, id } = await req.json();
+  const { message, id }: { message: Message; id: string } = await req.json();
 
-  console.log("message", messages);
+  const previousMessages = await loadMessages(id);
+
+  const messages = appendClientMessage({
+    messages: previousMessages,
+    message,
+  });
 
   const result = streamText({
     model: openai("gpt-4o"),
     system: "You are a helpful assistant.",
     messages,
     async onFinish({ response }) {
-      await saveChat({
+      await saveMessages({
         id,
         messages: appendResponseMessages({
           messages,

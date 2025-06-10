@@ -1,8 +1,8 @@
 // Example model schema from the Drizzle docs
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
-import { sql } from "drizzle-orm";
-import { index, pgTableCreator } from "drizzle-orm/pg-core";
+import { jsonb, pgEnum, pgTableCreator } from "drizzle-orm/pg-core";
+import { type Message } from "ai";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -11,17 +11,22 @@ import { index, pgTableCreator } from "drizzle-orm/pg-core";
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
 export const createTable = pgTableCreator((name) => `my-chatbot_${name}`);
+export const roleEnum = pgEnum("role", ["data", "user", "system", "assistant"]);
 
-export const posts = createTable(
-  "post",
-  (d) => ({
-    id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
-    name: d.varchar({ length: 256 }),
-    createdAt: d
-      .timestamp({ withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
-  }),
-  (t) => [index("name_idx").on(t.name)],
-);
+export const chatsTable = createTable("chatsTable", (d) => ({
+  id: d.varchar({ length: 255 }).primaryKey(),
+  createdAt: d.timestamp().defaultNow().notNull(),
+  updatedAt: d.timestamp().defaultNow().notNull(),
+}));
+
+export const messagesTable = createTable("messagesTable", (d) => ({
+  id: d.varchar({ length: 255 }).primaryKey(),
+  createdAt: d.timestamp().defaultNow().notNull(),
+  role: roleEnum("role").notNull(),
+  content: d.text().notNull(),
+  parts: jsonb().$type<Message["parts"]>().notNull(),
+  chatId: d
+    .varchar({ length: 255 })
+    .notNull()
+    .references(() => chatsTable.id),
+}));
