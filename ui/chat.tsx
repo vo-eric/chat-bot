@@ -2,6 +2,7 @@
 "use client";
 import { useChat, type Message } from "@ai-sdk/react";
 import { createIdGenerator, type ToolInvocation } from "ai";
+import { Stock } from "~/components/ui/stock";
 import { Weather } from "~/components/ui/weather";
 
 export default function Chat({
@@ -194,6 +195,8 @@ export default function Chat({
   //   </div>
   // );
 
+  console.log("messages in render", messages);
+
   return (
     <div>
       {messages.map((message) => (
@@ -208,22 +211,13 @@ export default function Chat({
                 case "tool-invocation":
                   const { toolInvocation }: { toolInvocation: ToolInvocation } =
                     part;
-                  const { toolName, toolCallId, state } = toolInvocation;
+                  const { toolName } = toolInvocation;
 
                   switch (toolName) {
                     case "displayWeather":
-                      switch (state) {
-                        case "result":
-                          return (
-                            <div key={toolCallId}>
-                              <Weather {...toolInvocation.result} />
-                            </div>
-                          );
-                        default:
-                          return (
-                            <div key={toolCallId}>Loading the weather...</div>
-                          );
-                      }
+                      return onDisplayWeatherToolInvocation(toolInvocation);
+                    case "displayStock":
+                      return onDisplayStockToolInvocation(toolInvocation);
                   }
               }
             })}
@@ -242,3 +236,33 @@ export default function Chat({
     </div>
   );
 }
+
+const onDisplayWeatherToolInvocation = (toolInvocation: ToolInvocation) => {
+  const { toolCallId, state } = toolInvocation;
+
+  switch (state) {
+    case "result":
+      return (
+        <div key={toolCallId}>
+          <Weather {...toolInvocation.result} />
+        </div>
+      );
+    default:
+      return <div key={toolCallId}>Loading the weather...</div>;
+  }
+};
+
+const onDisplayStockToolInvocation = (toolInvocation: ToolInvocation) => {
+  const { toolCallId, state } = toolInvocation;
+
+  switch (state) {
+    case "result":
+      return (
+        <div key={toolCallId}>
+          <Stock {...toolInvocation.result} />
+        </div>
+      );
+    default:
+      return <div key={toolCallId}>Loading the weather...</div>;
+  }
+};
