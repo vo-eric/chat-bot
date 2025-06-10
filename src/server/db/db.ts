@@ -1,4 +1,4 @@
-import { desc, eq } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 import { chatsTable, messagesTable } from "./schema";
 import { drizzle } from "drizzle-orm/postgres-js";
 import type { Message } from "ai";
@@ -50,7 +50,7 @@ export class ChatbotAPI implements ChatbotAPIInterface {
       .select()
       .from(messagesTable)
       .where(eq(messagesTable.chatId, chatId))
-      .orderBy(desc(messagesTable.createdAt));
+      .orderBy(asc(messagesTable.createdAt));
   }
 
   async saveMessages(chatId: string, messages: Message[]) {
