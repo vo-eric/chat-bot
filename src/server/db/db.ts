@@ -56,14 +56,23 @@ export class ChatbotAPI implements ChatbotAPIInterface {
   async saveMessages(chatId: string, messages: Message[]) {
     for (const message of messages) {
       try {
-        await this.db.insert(messagesTable).values({
-          id: crypto.randomUUID(),
-          createdAt: new Date(),
-          role: message.role,
-          content: message.content,
-          parts: message.parts,
-          chatId,
-        });
+        await this.db
+          .insert(messagesTable)
+          .values({
+            id: message.id,
+            createdAt: new Date(),
+            role: message.role,
+            content: message.content,
+            parts: message.parts,
+            chatId,
+          })
+          .onConflictDoUpdate({
+            target: messagesTable.id,
+            set: {
+              content: message.content,
+              parts: message.parts,
+            },
+          });
       } catch (error) {
         throw error;
       }
