@@ -195,8 +195,6 @@ export default function Chat({
   //   </div>
   // );
 
-  console.log("messages in render", messages);
-
   return (
     <div>
       {messages.map((message) => (
@@ -215,9 +213,9 @@ export default function Chat({
 
                   switch (toolName) {
                     case "displayWeather":
-                      return onDisplayWeatherToolInvocation(toolInvocation);
-                    case "displayStock":
-                      return onDisplayStockToolInvocation(toolInvocation);
+                      return renderToolInvocation(toolInvocation, Weather);
+                    case "getStockPrice":
+                      return renderToolInvocation(toolInvocation, Stock);
                   }
               }
             })}
@@ -237,32 +235,18 @@ export default function Chat({
   );
 }
 
-const onDisplayWeatherToolInvocation = (toolInvocation: ToolInvocation) => {
+const renderToolInvocation = (
+  toolInvocation: ToolInvocation,
+  ComponentToRender: React.ElementType,
+) => {
   const { toolCallId, state } = toolInvocation;
 
   switch (state) {
     case "result":
       return (
         <div key={toolCallId}>
-          <Weather {...toolInvocation.result} />
+          <ComponentToRender {...toolInvocation.result} />
         </div>
       );
-    default:
-      return <div key={toolCallId}>Loading the weather...</div>;
-  }
-};
-
-const onDisplayStockToolInvocation = (toolInvocation: ToolInvocation) => {
-  const { toolCallId, state } = toolInvocation;
-
-  switch (state) {
-    case "result":
-      return (
-        <div key={toolCallId}>
-          <Stock {...toolInvocation.result} />
-        </div>
-      );
-    default:
-      return <div key={toolCallId}>Loading the weather...</div>;
   }
 };
