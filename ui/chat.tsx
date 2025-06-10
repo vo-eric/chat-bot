@@ -248,5 +248,7 @@ const renderToolInvocation = (
           <ComponentToRender {...toolInvocation.result} />
         </div>
       );
+    default:
+      return null;
   }
 };
