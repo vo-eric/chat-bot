@@ -23,9 +23,9 @@ export async function POST(req: Request) {
       headers: await headers(),
     });
 
-    // if (!session?.user) {
-    //   return new Response(JSON.stringify({ error: "Unauthorized" }));
-    // }
+    if (!session?.user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }));
+    }
 
     const { message, id }: { message: Message; id: string } = await req.json();
 
