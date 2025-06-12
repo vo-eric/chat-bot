@@ -20,5 +20,17 @@ export default function Auth() {
       </div>
     );
   }
-  return <div>AWWWTH</div>;
+  return (
+    <div className="flex items-center gap-4">
+      <p className="text-xl">
+        Hello, {session.user.name || session.user.email}
+      </p>
+      <button
+        className="flex cursor-pointer gap-2 rounded-lg border border-black p-2"
+        onClick={() => signOut()}
+      >
+        Sign out
+      </button>
+    </div>
+  );
 }
