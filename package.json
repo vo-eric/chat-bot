@@ -22,6 +22,7 @@
   "dependencies": {
     "@ai-sdk/openai": "^1.3.22",
     "@ai-sdk/react": "^1.2.12",
+    "@better-auth/root": "https://github.com/better-auth/better-auth/archive/refs/tags/v1.2.9.tar.gz",
     "@radix-ui/react-slot": "^1.2.3",
     "@t3-oss/env-nextjs": "^0.12.0",
     "@tanstack/react-query": "^5.69.0",
@@ -29,6 +30,7 @@
     "@trpc/react-query": "^11.0.0",
     "@trpc/server": "^11.0.0",
     "ai": "^4.3.16",
+    "better-auth": "^1.2.9",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.41.0",
