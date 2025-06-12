@@ -200,7 +200,7 @@ export default function Chat({
   //   </div>
   // );
 
-  if (session || isPending) {
+  if (!session || isPending) {
     return (
       <div className="flex flex-col items-center gap-4 text-center">
         <p>Log in to talk to the CHAAAATBAWWWWWWWT</p>
