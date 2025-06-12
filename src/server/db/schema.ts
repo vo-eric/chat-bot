@@ -21,13 +21,13 @@ import { type Message } from "ai";
 export const createTable = pgTableCreator((name) => `my-chatbot_${name}`);
 export const roleEnum = pgEnum("role", ["data", "user", "system", "assistant"]);
 
-export const chatsTable = createTable("chatsTable", (d) => ({
+export const chatsTable = createTable("chats", (d) => ({
   id: d.varchar({ length: 255 }).primaryKey(),
   createdAt: d.timestamp().defaultNow().notNull(),
   updatedAt: d.timestamp().defaultNow().notNull(),
 }));
 
-export const messagesTable = createTable("messagesTable", (d) => ({
+export const messagesTable = createTable("messages", (d) => ({
   id: d.varchar({ length: 255 }).primaryKey(),
   createdAt: d.timestamp().defaultNow().notNull(),
   role: roleEnum("role").notNull(),
