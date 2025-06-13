@@ -1,12 +1,10 @@
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+
 import { createChat } from "tools/chat-store";
-import { auth } from "~/lib/auth";
+import { getSession } from "~/lib/utils";
 
 export default async function Page() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSession();
 
   if (!session) {
     redirect("/login");

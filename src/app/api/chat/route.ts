@@ -13,15 +13,14 @@ import { loadMessages, saveMessages } from "tools/chat-store";
 // import z from "zod";
 import { tools } from "~/ai/tools";
 import { auth } from "~/lib/auth";
+import { getSession } from "~/lib/utils";
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const session = await getSession();
 
     if (!session?.user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }));
