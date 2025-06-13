@@ -4,11 +4,16 @@ import { useChat, type Message } from "@ai-sdk/react";
 import { createIdGenerator, type ToolInvocation } from "ai";
 import { Stock } from "~/components/ui/stock";
 import { Weather } from "~/components/ui/weather";
+import { authClient } from "~/lib/auth-client";
+import { Github } from "lucide-react";
 
 export default function Chat({
   id,
   initialMessages,
 }: { id?: string | undefined; initialMessages?: Message[] } = {}) {
+  const { useSession, signIn } = authClient;
+  const { data: session, isPending } = useSession();
+
   const {
     messages,
     input,
@@ -195,6 +200,20 @@ export default function Chat({
   //   </div>
   // );
 
+  if (!session || isPending) {
+    return (
+      <div className="flex flex-col items-center gap-4 text-center">
+        <p>Log in to talk to the CHAAAATBAWWWWWWWT</p>
+        <button
+          className="flex max-w-[200px] cursor-pointer gap-2 rounded-lg border border-black p-2"
+          onClick={() => signIn.social({ provider: "github" })}
+        >
+          <Github className="h-6 w-6" />
+          Sign in with Github
+        </button>
+      </div>
+    );
+  }
   return (
     <div>
       {messages.map((message) => (
