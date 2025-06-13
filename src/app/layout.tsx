@@ -30,7 +30,7 @@ export default function RootLayout({
               <Auth />
             </nav>
           </div>
-          <div className="mx-auto mt-[60px] w-[60%] pt-[20px]">{children}</div>
+          <div>{children}</div>
         </TRPCReactProvider>
       </body>
     </html>

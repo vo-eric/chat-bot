@@ -196,7 +196,7 @@ export default function Chat({
   // );
 
   return (
-    <div>
+    <div className="mx-auto w-[60%] pt-[20px]">
       {messages.map((message) => (
         <div key={message.id}>
           <div>{message.role === "user" ? "User: " : "AI: "}</div>
