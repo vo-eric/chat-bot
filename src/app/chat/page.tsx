@@ -8,9 +8,10 @@ export default async function Page() {
     headers: await headers(),
   });
 
-  const id = await createChat(session?.user.id); // create a new chat
-
   if (!session) {
-    redirect(`/chat/${id}`); // redirect to chat page, see below
+    redirect("/login");
   }
+
+  const id = await createChat(session?.user.id); // create a new chat
+  redirect(`/chat/${id}`); // redirect to chat page, see below
 }
