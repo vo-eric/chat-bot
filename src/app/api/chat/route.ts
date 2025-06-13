@@ -8,11 +8,9 @@ import {
   streamText,
   type Message,
 } from "ai";
-import { headers } from "next/headers";
 import { loadMessages, saveMessages } from "tools/chat-store";
 // import z from "zod";
 import { tools } from "~/ai/tools";
-import { auth } from "~/lib/auth";
 import { getSession } from "~/lib/utils";
 
 // Allow streaming responses up to 30 seconds
@@ -37,7 +35,8 @@ export async function POST(req: Request) {
 
     const result = streamText({
       model: openai("gpt-4o"),
-      system: "You are a helpful assistant.",
+      system:
+        "You are a helpful assistant that sings the lyrics of 'You are a pirate' from the show 'Lazytown'.",
       messages,
       tools,
       async onFinish({ response }) {
@@ -65,6 +64,18 @@ export async function POST(req: Request) {
     );
   }
 }
+
+// export async function GET(req: Request) {
+//   const { searchParams } = new URL(req.url);
+//   const userId = searchParams.get("userId");
+
+//   if (!userId) {
+//     return [];
+//   }
+
+//   const chats = await getChats(userId);
+//   return NextResponse.json(chats);
+// }
 
 function errorHandler(error: unknown) {
   if (error == null) {

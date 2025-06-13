@@ -1,4 +1,4 @@
-import { and, asc, eq, sql } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 import { chatsTable, messagesTable } from "./schema";
 import { drizzle } from "drizzle-orm/postgres-js";
 import type { Message } from "ai";
@@ -7,8 +7,9 @@ export type Chat = typeof chatsTable.$inferSelect;
 
 export interface ChatbotAPIInterface {
   createChat: (id: string) => Promise<Chat>;
-  loadChat: (id: string, userId: string) => Promise<Chat>;
+  getChats: (id: string) => Promise<Chat[]>;
   saveMessages: (id: string, messages: Message[]) => Promise<void>;
+  fetchLastChatMessage: (id: string) => Promise<Message | undefined>;
 }
 
 export class ChatbotAPI implements ChatbotAPIInterface {
@@ -34,19 +35,43 @@ export class ChatbotAPI implements ChatbotAPIInterface {
     return chat[0];
   }
 
-  async loadChat(id: string, userId: string): Promise<Chat> {
-    const [chat] = await this.db
+  // async loadChat(id: string, userId: string): Promise<Chat> {
+  //   const [chat] = await this.db
+  //     .select()
+  //     .from(chatsTable)
+  //     .where(
+  //       sql`${chatsTable.id} = ${id} and ${chatsTable.userId} = ${userId}`,
+  //     );
+
+  //   if (!chat) {
+  //     throw new Error(`Chat with ID ${id} not found`);
+  //   }
+
+  //   return chat;
+  // }
+
+  async getChats(id: string): Promise<Chat[]> {
+    const chats = await this.db
       .select()
       .from(chatsTable)
-      .where(
-        sql`${chatsTable.id} = ${id} and ${chatsTable.userId} = ${userId}`,
-      );
+      .where(eq(chatsTable.userId, id));
+    return chats;
+  }
 
-    if (!chat) {
-      throw new Error(`Chat with ID ${id} not found`);
-    }
+  async fetchLastChatMessage(chatId: string): Promise<Message | undefined> {
+    const [message] = await this.db
+      .select({
+        id: messagesTable.id,
+        content: messagesTable.content,
+        role: messagesTable.role,
+        createdAt: messagesTable.createdAt,
+      })
+      .from(messagesTable)
+      .where(eq(messagesTable.chatId, chatId))
+      .orderBy(asc(messagesTable.createdAt))
+      .limit(1);
 
-    return chat;
+    return message;
   }
 
   async loadMessages(chatId: string, userId: string): Promise<Message[]> {
@@ -73,7 +98,7 @@ export class ChatbotAPI implements ChatbotAPIInterface {
             createdAt: new Date(),
             role: message.role,
             content: message.content,
-            parts: message.parts,
+            parts: message.parts ?? [],
             chatId,
           })
           .onConflictDoUpdate({

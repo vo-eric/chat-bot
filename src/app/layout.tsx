@@ -21,7 +21,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${geist.variable}`}>
+    <html lang="en" className={`${geist.variable} h-[100vh] overflow-hidden`}>
       <body>
         <TRPCReactProvider>
           <div>
@@ -30,7 +30,7 @@ export default function RootLayout({
               <Auth />
             </nav>
           </div>
-          <div className="mx-auto mt-[60px] w-[60%] pt-[20px]">{children}</div>
+          <div>{children}</div>
         </TRPCReactProvider>
       </body>
     </html>
