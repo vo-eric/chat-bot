@@ -196,41 +196,46 @@ export default function Chat({
   // );
 
   return (
-    <div className="mx-auto w-[60%] pt-[20px]">
-      {messages.map((message) => (
-        <div key={message.id}>
-          <div>{message.role === "user" ? "User: " : "AI: "}</div>
-          <div>{message.content}</div>
+    <div className="relative mx-auto h-[calc(100vh-120px)] w-[60%]">
+      <div className="absolute top-[10%] z-[-1] h-full w-full bg-[url(/pirate-ship.webp)] bg-no-repeat object-contain pt-[20px] opacity-10" />
+      <div className="relative h-full overflow-scroll py-4">
+        {messages.map((message) => (
+          <div key={message.id}>
+            <div>{message.role === "user" ? "User: " : "AI: "}</div>
+            <div>{message.content}</div>
 
-          <div>
-            {message.parts.map((part) => {
-              const { type } = part;
-              switch (type) {
-                case "tool-invocation":
-                  const { toolInvocation }: { toolInvocation: ToolInvocation } =
-                    part;
-                  const { toolName } = toolInvocation;
+            <div>
+              {message.parts.map((part) => {
+                const { type } = part;
+                switch (type) {
+                  case "tool-invocation":
+                    const {
+                      toolInvocation,
+                    }: { toolInvocation: ToolInvocation } = part;
+                    const { toolName } = toolInvocation;
 
-                  switch (toolName) {
-                    case "displayWeather":
-                      return renderToolInvocation(toolInvocation, Weather);
-                    case "getStockPrice":
-                      return renderToolInvocation(toolInvocation, Stock);
-                  }
-              }
-            })}
+                    switch (toolName) {
+                      case "displayWeather":
+                        return renderToolInvocation(toolInvocation, Weather);
+                      case "getStockPrice":
+                        return renderToolInvocation(toolInvocation, Stock);
+                    }
+                }
+              })}
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
 
-      <form onSubmit={handleSubmit}>
-        <input
-          value={input}
-          onChange={handleInputChange}
-          placeholder="Type a message..."
-        />
-        <button type="submit">Send</button>
-      </form>
+        <form onSubmit={handleSubmit} className="mt-4 flex w-full gap-2">
+          <input
+            value={input}
+            onChange={handleInputChange}
+            placeholder="Type a message..."
+            className="w-full"
+          />
+          <button type="submit">Send</button>
+        </form>
+      </div>
     </div>
   );
 }
