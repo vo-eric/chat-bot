@@ -98,7 +98,7 @@ export class ChatbotAPI implements ChatbotAPIInterface {
             createdAt: new Date(),
             role: message.role,
             content: message.content,
-            parts: message.parts,
+            parts: message.parts ?? [],
             chatId,
           })
           .onConflictDoUpdate({

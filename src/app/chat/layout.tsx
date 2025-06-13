@@ -2,6 +2,7 @@ import { getSession } from "~/lib/utils";
 import ChatList from "../chatList/page";
 import { getChats } from "tools/chat-store";
 import ChatbotAPI from "~/server/db/db";
+import { cookies } from "next/headers";
 
 export default async function Layout({
   children,
@@ -19,11 +20,12 @@ export default async function Layout({
       };
     }),
   );
+  const isExpanded = (await cookies()).get("expanded")?.value === "true";
 
   return (
     <>
       <aside>
-        <ChatList chats={chatsToRender} />
+        <ChatList chats={chatsToRender} isExpanded={isExpanded} />
       </aside>
       <div>{children}</div>
     </>
