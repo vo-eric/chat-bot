@@ -3,7 +3,7 @@ import { getSession } from "~/lib/utils";
 import { getChats } from "tools/chat-store";
 import ChatbotAPI from "~/server/db/db";
 import { cookies } from "next/headers";
-import ChatList from "./ChatList";
+import ChatList from "./chat-list";
 
 export default async function Page() {
   const chatbotAPI = new ChatbotAPI();
