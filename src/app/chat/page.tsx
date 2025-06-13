@@ -1,15 +1,16 @@
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createChat } from "tools/chat-store";
+import { auth } from "~/lib/auth";
 
 export default async function Page() {
-  /*
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-  Eventually turn this into a conditional
-    if id is provided, redirect to `/chat/[id]`
-    if not, do the below
+  const id = await createChat(session?.user.id); // create a new chat
 
-  */
-
-  const id = await createChat(); // create a new chat
-  redirect(`/chat/${id}`); // redirect to chat page, see below
+  if (!session) {
+    redirect(`/chat/${id}`); // redirect to chat page, see below
+  }
 }

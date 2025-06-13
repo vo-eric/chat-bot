@@ -14,22 +14,30 @@ export interface ChatbotAPIInterface {
 export class ChatbotAPI implements ChatbotAPIInterface {
   private db = drizzle(process.env.DATABASE_URL!);
 
-  async createChat(id: string): Promise<Chat> {
-    await this.db.insert(chatsTable).values({
-      id,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
+  async createChat(userId?: string): Promise<Chat> {
+    console.log("USER ID", userId);
+    const chat = await this.db
+      .insert(chatsTable)
+      .values({
+        id: crypto.randomUUID(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        userId: userId ?? null,
+      })
+      .returning();
 
-    const [chat] = await this.db
-      .select()
-      .from(chatsTable)
-      .where(eq(chatsTable.id, id));
-
-    if (!chat) {
-      throw new Error(`Chat with ID ${id} not found`);
+    // const [chat] = await this.db
+    //   .select()
+    //   .from(chatsTable)
+    if (!chat[0]) {
+      throw new Error("Error when creating a new chat");
     }
-    return chat;
+
+    console.log("=======");
+    console.log("chat", chat[0]);
+    console.log("=======");
+
+    return chat[0];
   }
 
   async loadChat(id: string): Promise<Chat> {

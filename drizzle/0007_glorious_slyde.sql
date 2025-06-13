@@ -1,0 +1,1 @@
+ALTER TABLE "my-chatbot_chats" ALTER COLUMN "userId" DROP NOT NULL;

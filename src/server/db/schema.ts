@@ -25,6 +25,7 @@ export const chatsTable = createTable("chats", (d) => ({
   id: d.varchar({ length: 255 }).primaryKey(),
   createdAt: d.timestamp().defaultNow().notNull(),
   updatedAt: d.timestamp().defaultNow().notNull(),
+  userId: d.varchar({ length: 255 }).references(() => user.id),
 }));
 
 export const messagesTable = createTable("messages", (d) => ({

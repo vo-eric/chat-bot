@@ -43,6 +43,20 @@
       "when": 1749760729684,
       "tag": "0005_wild_moira_mactaggert",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1749767980177,
+      "tag": "0006_first_shatterstar",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1749821483289,
+      "tag": "0007_glorious_slyde",
+      "breakpoints": true
     }
   ]
 }
