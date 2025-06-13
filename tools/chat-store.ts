@@ -7,9 +7,9 @@ export async function createChat(userId?: string): Promise<string> {
   return chat.id;
 }
 
-export async function loadChat(id: string): Promise<Chat> {
-  return await chatbotAPI.loadChat(id);
-}
+// export async function loadChat(id: string): Promise<Chat> {
+//   return await chatbotAPI.loadChat(id);
+// }
 
 export async function loadMessages(
   chatId: string,
