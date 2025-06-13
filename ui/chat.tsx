@@ -198,7 +198,7 @@ export default function Chat({
   return (
     <div className="relative mx-auto h-[calc(100vh-120px)] w-[60%]">
       <div className="absolute top-[10%] z-[-1] h-full w-full bg-[url(/pirate-ship.webp)] bg-no-repeat object-contain pt-[20px] opacity-10" />
-      <div className="relative flex h-full flex-col overflow-scroll py-4">
+      <div className="relative h-full overflow-scroll py-4">
         {messages.map((message) => (
           <div key={message.id}>
             <div>{message.role === "user" ? "User: " : "AI: "}</div>
@@ -226,7 +226,7 @@ export default function Chat({
           </div>
         ))}
 
-        <form onSubmit={handleSubmit} className="mt-auto flex w-full gap-2">
+        <form onSubmit={handleSubmit} className="mt-4 flex w-full gap-2">
           <input
             value={input}
             onChange={handleInputChange}
