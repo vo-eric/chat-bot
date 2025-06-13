@@ -10,5 +10,8 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
   if (!session) {
     redirect("/login");
   }
+
+  const messages = await loadMessages(id, session?.user.id); // load the chat messages
+  console.log("messages", messages);
   return <Chat id={id} initialMessages={messages} />; // display the chat
 }

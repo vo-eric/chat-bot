@@ -11,8 +11,11 @@ export async function loadChat(id: string): Promise<Chat> {
   return await chatbotAPI.loadChat(id);
 }
 
-export async function loadMessages(chatId: string): Promise<Message[]> {
-  return await chatbotAPI.loadMessages(chatId);
+export async function loadMessages(
+  chatId: string,
+  userId: string,
+): Promise<Message[]> {
+  return await chatbotAPI.loadMessages(chatId, userId);
 }
 
 export async function saveMessages({

@@ -28,7 +28,7 @@ export async function POST(req: Request) {
 
     const { message, id }: { message: Message; id: string } = await req.json();
 
-    const previousMessages = await loadMessages(id);
+    const previousMessages = await loadMessages(id, session?.user.id);
 
     const messages = appendClientMessage({
       messages: previousMessages,

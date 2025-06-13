@@ -1,4 +1,4 @@
-import { asc, eq } from "drizzle-orm";
+import { and, asc, eq, sql } from "drizzle-orm";
 import { chatsTable, messagesTable } from "./schema";
 import { drizzle } from "drizzle-orm/postgres-js";
 import type { Message } from "ai";
@@ -7,7 +7,7 @@ export type Chat = typeof chatsTable.$inferSelect;
 
 export interface ChatbotAPIInterface {
   createChat: (id: string) => Promise<Chat>;
-  loadChat: (id: string) => Promise<Chat>;
+  loadChat: (id: string, userId: string) => Promise<Chat>;
   saveMessages: (id: string, messages: Message[]) => Promise<void>;
 }
 
@@ -15,7 +15,6 @@ export class ChatbotAPI implements ChatbotAPIInterface {
   private db = drizzle(process.env.DATABASE_URL!);
 
   async createChat(userId?: string): Promise<Chat> {
-    console.log("USER ID", userId);
     const chat = await this.db
       .insert(chatsTable)
       .values({
@@ -32,19 +31,16 @@ export class ChatbotAPI implements ChatbotAPIInterface {
     if (!chat[0]) {
       throw new Error("Error when creating a new chat");
     }
-
-    console.log("=======");
-    console.log("chat", chat[0]);
-    console.log("=======");
-
     return chat[0];
   }
 
-  async loadChat(id: string): Promise<Chat> {
+  async loadChat(id: string, userId: string): Promise<Chat> {
     const [chat] = await this.db
       .select()
       .from(chatsTable)
-      .where(eq(chatsTable.id, id));
+      .where(
+        sql`${chatsTable.id} = ${id} and ${chatsTable.userId} = ${userId}`,
+      );
 
     if (!chat) {
       throw new Error(`Chat with ID ${id} not found`);
@@ -53,11 +49,17 @@ export class ChatbotAPI implements ChatbotAPIInterface {
     return chat;
   }
 
-  async loadMessages(chatId: string): Promise<Message[]> {
+  async loadMessages(chatId: string, userId: string): Promise<Message[]> {
     return await this.db
-      .select()
+      .select({
+        id: messagesTable.id,
+        content: messagesTable.content,
+        role: messagesTable.role,
+        createdAt: messagesTable.createdAt,
+      })
       .from(messagesTable)
-      .where(eq(messagesTable.chatId, chatId))
+      .innerJoin(chatsTable, eq(messagesTable.chatId, chatsTable.id))
+      .where(and(eq(chatsTable.id, chatId), eq(chatsTable.userId, userId)))
       .orderBy(asc(messagesTable.createdAt));
   }
 
